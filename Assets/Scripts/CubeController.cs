@@ -4,9 +4,8 @@ using UnityEngine;
 public class CubeController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
-
-    private bool moveX;
-    private bool triggerX = true;
+    private bool moveDirectionTrigger;
+    private bool started;
     private Rigidbody rb;
 
 
@@ -17,7 +16,7 @@ public class CubeController : MonoBehaviour
 
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame
@@ -25,41 +24,40 @@ public class CubeController : MonoBehaviour
     {
         //rb.linearVelocity = new Vector3(moveSpeed, 0, 0);
 
-        if (Input.GetMouseButtonDown(0))
+        if (!started)
         {
-            if (triggerX)
+            if (Input.GetMouseButtonDown(0))
             {
-                moveX = true;
-                triggerX = false;
-            }
-            else
-            {
-                moveX = false;
-                triggerX = true;
+                started = true;
+                rb.linearVelocity = new Vector3(moveSpeed, 0, 0);
             }
         }
-    }
 
+        if (Input.GetMouseButtonDown(0))
+        {
+            moveDirectionTrigger = true;
+        }
+    }
 
     void FixedUpdate()
     {
-        if (moveX)
+        if (moveDirectionTrigger)
         {
-            MoveXDirection();
-        }
-        else
-        {
-            MoveZDirection();
+            SwitchDirection();
+            moveDirectionTrigger = false;
         }
     }
 
-    void MoveXDirection()
+    void SwitchDirection()
     {
-        rb.linearVelocity = new Vector3(moveSpeed, 0f, 0f);
+        if (rb.linearVelocity.z > 0)
+        {
+            rb.linearVelocity = new Vector3(moveSpeed, 0, 0);
+        } 
+        else if (rb.linearVelocity.x > 0)
+        {
+            rb.linearVelocity = new Vector3(0, 0, moveSpeed);
+        }
     }
 
-    void MoveZDirection()
-    {
-        rb.linearVelocity = new Vector3(0f, 0f, moveSpeed);
-    }
 }
