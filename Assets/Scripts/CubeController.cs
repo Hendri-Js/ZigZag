@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class CubeController : MonoBehaviour
 {
     [SerializeField] private float moveSpeed;
     private bool moveDirectionTrigger;
     private bool started;
+    private bool gameOver;
     private Rigidbody rb;
 
 
@@ -32,11 +34,22 @@ public class CubeController : MonoBehaviour
                 rb.linearVelocity = new Vector3(moveSpeed, 0, 0);
             }
         }
+        
+        
+        if (!Physics.Raycast(transform.position, Vector3.down, 1f))
+        {
+            Invoke("GameOverPos",0.2f);
+            gameOver = true;
+            Camera.main.GetComponent<CameraFollow>().gameOver = true;
+            
+        }
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !gameOver)
         {
             moveDirectionTrigger = true;
         }
+
+        
     }
 
     void FixedUpdate()
@@ -58,6 +71,11 @@ public class CubeController : MonoBehaviour
         {
             rb.linearVelocity = new Vector3(0, 0, moveSpeed);
         }
+    }
+
+    void GameOverPos()
+    {
+        rb.linearVelocity = new Vector3(0, -25f, 0);
     }
 
 }
